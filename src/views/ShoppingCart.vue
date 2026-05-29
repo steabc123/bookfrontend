@@ -4,8 +4,9 @@
       <h1>线上書阁 - 购物车</h1>
       <nav>
         <router-link to="/books">图书管理</router-link>
-        <router-link to="/categories">分类管理</router-link>
-        <router-link to="/borrows">借阅管理</router-link>
+        <router-link v-if="isRoot" to="/categories">分类管理</router-link>
+        <router-link v-if="isRoot" to="/borrows">借阅管理</router-link>
+        <router-link v-if="isRoot" to="/users">用户管理</router-link>
         <router-link to="/cart" class="active">购物车</router-link>
         <button @click="logout">退出登录</button>
       </nav>
@@ -76,6 +77,21 @@ export default {
     return {
       cartItems: [],
       totalAmount: 0
+    }
+  },
+  computed: {
+    isRoot() {
+      const userInfo = localStorage.getItem('userInfo')
+      if (userInfo) {
+        try {
+          const user = JSON.parse(userInfo)
+          return user.username === 'root'
+        } catch (e) {
+          console.error('解析用户信息失败:', e)
+          return false
+        }
+      }
+      return false
     }
   },
   created() {

@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+// 获取所有用户
+export function getUsers() {
+    return request({
+        url: '/users/all',
+        method: 'get'
+    })
+}
+
 // 用户登录
 export function login(data) {
     return request({

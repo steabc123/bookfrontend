@@ -4,8 +4,9 @@
       <h1>线上書阁</h1>
       <nav>
         <router-link to="/books">图书管理</router-link>
-        <router-link to="/categories">分类管理</router-link>
-        <router-link to="/borrows">借阅管理</router-link>
+        <router-link v-if="isRoot" to="/categories">分类管理</router-link>
+        <router-link v-if="isRoot" to="/borrows">借阅管理</router-link>
+        <router-link v-if="isRoot" to="/users">用户管理</router-link>
         <router-link to="/cart">购物车</router-link>
         <button @click="logout">退出登录</button>
       </nav>
@@ -21,7 +22,7 @@
         />
         <button @click="handleSearch">搜索</button>
         <button @click="loadBooks">刷新</button>
-        <button @click="showAddDialog = true">添加图书</button>
+        <button v-if="isRoot" @click="showAddDialog = true">添加图书</button>
       </div>
 
       <table class="data-table">
@@ -49,8 +50,8 @@
           <td>{{ book.stock }}</td>
           <td>{{ getCategoryName(book.categoryId) }}</td>
           <td>
-            <button @click="handleEdit(book)" class="btn-edit">编辑</button>
-            <button @click="handleDelete(book.id)" class="btn-delete">删除</button>
+            <button v-if="isRoot" @click="handleEdit(book)" class="btn-edit">编辑</button>
+            <button v-if="isRoot" @click="handleDelete(book.id)" class="btn-delete">删除</button>
             <button @click="handleBorrow(book.id)" class="btn-borrow">借阅</button>
             <button 
                 v-if="isBookBorrowed(book.id)" 
@@ -137,6 +138,21 @@ export default {
         categoryId: 1
       },
       userBorrows: [] // 当前用户的借阅记录
+    }
+  },
+  computed: {
+    isRoot() {
+      const userInfo = localStorage.getItem('userInfo')
+      if (userInfo) {
+        try {
+          const user = JSON.parse(userInfo)
+          return user.username === 'root'
+        } catch (e) {
+          console.error('解析用户信息失败:', e)
+          return false
+        }
+      }
+      return false
     }
   },
   created() {

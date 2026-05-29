@@ -4,8 +4,9 @@
       <h1>线上書阁</h1>
       <nav>
         <router-link to="/books">图书管理</router-link>
-        <router-link to="/categories">分类管理</router-link>
-        <router-link to="/borrows">借阅管理</router-link>
+        <router-link v-if="isRoot" to="/categories">分类管理</router-link>
+        <router-link v-if="isRoot" to="/borrows">借阅管理</router-link>
+        <router-link v-if="isRoot" to="/users">用户管理</router-link>
         <button @click="logout">退出登录</button>
       </nav>
     </header>
@@ -66,6 +67,21 @@ export default {
       borrows: []
     }
   },
+  computed: {
+    isRoot() {
+      const userInfo = localStorage.getItem('userInfo')
+      if (userInfo) {
+        try {
+          const user = JSON.parse(userInfo)
+          return user.username === 'root'
+        } catch (e) {
+          console.error('解析用户信息失败:', e)
+          return false
+        }
+      }
+      return false
+    }
+  },
   created() {
     this.loadBorrows()
   },
@@ -106,8 +122,28 @@ export default {
     },
     formatDate(dateString) {
       if (!dateString) return '-'
+      
+      // 直接使用 toLocaleString 并指定时区为亚洲/上海（北京时间）
+      // 这样无论后端返回的是什么格式，都会正确显示为北京时间
       const date = new Date(dateString)
-      return date.toLocaleString('zh-CN')
+      
+      // 检查日期是否有效
+      if (isNaN(date.getTime())) {
+        console.warn('无效的日期格式:', dateString)
+        return dateString
+      }
+      
+      // 使用北京时间时区格式化
+      return date.toLocaleString('zh-CN', {
+        timeZone: 'Asia/Shanghai',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      })
     },
     logout() {
       localStorage.removeItem('token')
