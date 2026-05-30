@@ -228,7 +228,7 @@ export default {
 }
 
 .header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: url(/src/views/background.jpg) center/cover no-repeat;
   color: white;
   padding: 20px;
   display: flex;
@@ -238,6 +238,7 @@ export default {
 
 .header h1 {
   margin: 0;
+  font-family: '楷体', 'KaiTi', 'STKaiti', serif;
 }
 
 .header nav {
@@ -247,7 +248,7 @@ export default {
 }
 
 .header nav a {
-  color: white;
+  color: black;
   text-decoration: none;
   padding: 8px 16px;
   border-radius: 5px;
@@ -261,8 +262,8 @@ export default {
 
 .header nav button {
   background: rgba(255,255,255,0.2);
-  color: white;
-  border: 1px solid white;
+  color: black;
+  border: 1px solid rgba(0,0,0,0.3);
   padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
