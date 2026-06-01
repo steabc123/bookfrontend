@@ -3,11 +3,11 @@
     <header class="header">
       <h1>线上書阁</h1>
       <nav>
-        <router-link to="/books">图书管理</router-link>
-        <router-link v-if="isRoot" to="/categories">分类管理</router-link>
-        <router-link v-if="isRoot" to="/borrows">借阅管理</router-link>
-        <router-link v-if="isRoot" to="/users">用户管理</router-link>
+        <router-link to="/books">图书列表</router-link>
         <router-link to="/cart">购物车</router-link>
+        <router-link to="/my-borrows">我的借阅</router-link>
+        <router-link to="/my-orders">我的订单</router-link>
+        <router-link to="/profile">个人中心</router-link>
         <button @click="logout">退出登录</button>
       </nav>
     </header>
@@ -22,7 +22,6 @@
         />
         <button @click="handleSearch">搜索</button>
         <button @click="loadBooks">刷新</button>
-        <button v-if="isRoot" @click="showAddDialog = true">添加图书</button>
       </div>
 
       <table class="data-table">
@@ -50,8 +49,7 @@
           <td>{{ book.stock }}</td>
           <td>{{ getCategoryName(book.categoryId) }}</td>
           <td>
-            <button v-if="isRoot" @click="handleEdit(book)" class="btn-edit">编辑</button>
-            <button v-if="isRoot" @click="handleDelete(book.id)" class="btn-delete">删除</button>
+            <button @click="handleViewDetail(book.id)" class="btn-detail">查看详情</button>
             <button @click="handleBorrow(book.id)" class="btn-borrow">借阅</button>
             <button 
                 v-if="isBookBorrowed(book.id)" 
@@ -65,55 +63,12 @@
       </table>
     </main>
 
-    <!-- 添加/编辑图书对话框 -->
-    <div v-if="showAddDialog" class="modal">
-      <div class="modal-content">
-        <h3>{{ editMode ? '编辑图书' : '添加图书' }}</h3>
-        <form @submit.prevent="handleSubmit">
-          <div class="form-group">
-            <label>书名：</label>
-            <input v-model="formData.bookName" required />
-          </div>
-          <div class="form-group">
-            <label>作者：</label>
-            <input v-model="formData.author" required />
-          </div>
-          <div class="form-group">
-            <label>出版社：</label>
-            <input v-model="formData.publisher" />
-          </div>
-          <div class="form-group">
-            <label>ISBN：</label>
-            <input v-model="formData.isbn" required />
-          </div>
-          <div class="form-group">
-            <label>金额：</label>
-            <input type="number" step="0.01" v-model="formData.price" />
-          </div>
-          <div class="form-group">
-            <label>库存：</label>
-            <input type="number" v-model="formData.stock" required />
-          </div>
-          <div class="form-group">
-            <label>分类：</label>
-            <select v-model="formData.categoryId" required>
-              <option v-for="category in categories" :key="category.categoryId" :value="category.categoryId">
-                {{ category.categoryName }}
-              </option>
-            </select>
-          </div>
-          <div class="modal-actions">
-            <button type="submit">保存</button>
-            <button type="button" @click="closeDialog">取消</button>
-          </div>
-        </form>
-      </div>
-    </div>
+
   </div>
 </template>
 
 <script>
-import { getBooks, searchBooks, updateBook, addBook, deleteBook } from '@/api/book'
+import { getBooks, searchBooks } from '@/api/book'
 import { borrowBook, returnBook, getCurrentBorrows } from '@/api/borrow'
 import { getCategories } from '@/api/category'
 import { addToCart } from '@/api/cart'
@@ -125,36 +80,10 @@ export default {
       books: [],
       categories: [],
       searchKeyword: '',
-      showAddDialog: false,
-      editMode: false,
-      formData: {
-        id: null,
-        bookName: '',
-        author: '',
-        publisher: '',
-        isbn: '',
-        price: 0,
-        stock: 0,
-        categoryId: 1
-      },
       userBorrows: [] // 当前用户的借阅记录
     }
   },
-  computed: {
-    isRoot() {
-      const userInfo = localStorage.getItem('userInfo')
-      if (userInfo) {
-        try {
-          const user = JSON.parse(userInfo)
-          return user.username === 'root'
-        } catch (e) {
-          console.error('解析用户信息失败:', e)
-          return false
-        }
-      }
-      return false
-    }
-  },
+  computed: {},
   created() {
     this.loadBooks()
     this.loadUserBorrows()
@@ -209,65 +138,8 @@ export default {
         alert('搜索失败：' + error.message)
       }
     },
-    handleEdit(book) {
-      console.log('后端原始图书数据:', book)
-      console.log('分类列表:', this.categories)
-      this.editMode = true
-      this.formData = { 
-        id: book.id,
-        bookName: book.bookName,
-        author: book.author,
-        publisher: book.publisher || '',
-        isbn: book.isbn,
-        price: book.price || 0,
-        stock: book.stock,
-        categoryId: book.categoryId || 1
-      }
-      console.log('表单初始化数据:', this.formData)
-      this.showAddDialog = true
-    },
-    async handleSubmit() {
-      try {
-        console.log('提交前 formData:', this.formData)
-        const submitData = {
-          id: this.formData.id,
-          bookName: this.formData.bookName,
-          author: this.formData.author,
-          publisher: this.formData.publisher,
-          isbn: this.formData.isbn,
-          price: this.formData.price,
-          stock: this.formData.stock,
-          categoryId: this.formData.categoryId,
-          category_id: this.formData.categoryId
-        }
-        console.log('最终提交数据:', submitData)
-        if (this.editMode) {
-          await updateBook(submitData)
-          alert('更新成功')
-        } else {
-          await addBook(submitData)
-          alert('添加成功')
-        }
-        this.closeDialog()
-        this.loadBooks()
-        // 刷新借阅管理页面的数据
-        if (this.$route.path === '/books') {
-          this.$router.push('/borrows')
-          this.$router.push('/books')
-        }
-      } catch (error) {
-        alert('操作失败：' + error.message)
-      }
-    },
-    async handleDelete(id) {
-      if (!confirm('确定要删除这本图书吗？')) return
-      try {
-        await deleteBook(id)
-        alert('删除成功')
-        this.loadBooks()
-      } catch (error) {
-        alert('删除失败：' + error.message)
-      }
+    handleViewDetail(bookId) {
+      this.$router.push(`/book-detail/${bookId}`)
     },
     async handleBorrow(bookId) {
       try {
@@ -311,20 +183,7 @@ export default {
         alert('加入购物车失败：' + error.message)
       }
     },
-    closeDialog() {
-      this.showAddDialog = false
-      this.editMode = false
-      this.formData = {
-        id: null,
-        bookName: '',
-        author: '',
-        publisher: '',
-        isbn: '',
-        price: 0,
-        stock: 0,
-        categoryId: 1
-      }
-    },
+
     logout() {
       localStorage.removeItem('token')
       localStorage.removeItem('userInfo')
@@ -433,8 +292,7 @@ export default {
   background: #f8f9fa;
 }
 
-.btn-edit,
-.btn-delete,
+.btn-detail,
 .btn-borrow,
 .btn-return-book {
   padding: 5px 10px;
@@ -445,13 +303,8 @@ export default {
   font-size: 12px;
 }
 
-.btn-edit {
-  background: #4caf50;
-  color: white;
-}
-
-.btn-delete {
-  background: #f44336;
+.btn-detail {
+  background: #667eea;
   color: white;
 }
 
@@ -470,71 +323,5 @@ export default {
   color: white;
 }
 
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
 
-.modal-content {
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  width: 500px;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-.modal-content h3 {
-  margin-top: 0;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-sizing: border-box;
-}
-
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 20px;
-}
-
-.modal-actions button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.modal-actions button[type="submit"] {
-  background: #667eea;
-  color: white;
-}
-
-.modal-actions button[type="button"] {
-  background: #ccc;
-}
 </style>

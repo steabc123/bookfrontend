@@ -16,20 +16,16 @@ const routes = [
         name: 'Register',
         component: () => import('@/views/Register.vue')
     },
+    // 前台用户端路由
     {
         path: '/books',
         name: 'Books',
         component: () => import('@/views/Books.vue')
     },
     {
-        path: '/categories',
-        name: 'Categories',
-        component: () => import('@/views/Categories.vue')
-    },
-    {
-        path: '/borrows',
-        name: 'Borrows',
-        component: () => import('@/views/Borrows.vue')
+        path: '/book-detail/:id',
+        name: 'BookDetail',
+        component: () => import('@/views/BookDetail.vue')
     },
     {
         path: '/cart',
@@ -37,7 +33,43 @@ const routes = [
         component: () => import('@/views/ShoppingCart.vue')
     },
     {
-        path: '/users',
+        path: '/my-borrows',
+        name: 'MyBorrows',
+        component: () => import('@/views/MyOrders.vue')
+    },
+    {
+        path: '/my-orders',
+        name: 'UserOrders',
+        component: () => import('@/views/UserOrders.vue')
+    },
+    {
+        path: '/profile',
+        name: 'Profile',
+        component: () => import('@/views/Profile.vue')
+    },
+    // 后台管理端路由
+    {
+        path: '/admin/orders',
+        name: 'AdminOrders',
+        component: () => import('@/views/AdminOrders.vue')
+    },
+    {
+        path: '/admin/books',
+        name: 'AdminBooks',
+        component: () => import('@/views/AdminBooks.vue')
+    },
+    {
+        path: '/admin/categories',
+        name: 'Categories',
+        component: () => import('@/views/Categories.vue')
+    },
+    {
+        path: '/admin/borrows',
+        name: 'Borrows',
+        component: () => import('@/views/Borrows.vue')
+    },
+    {
+        path: '/admin/users',
         name: 'Users',
         component: () => import('@/views/Users.vue')
     }
@@ -80,12 +112,21 @@ router.beforeEach((to, from, next) => {
         console.error('解析用户信息失败:', e)
     }
     
-    // 非root用户只能访问图书管理、购物车和用户管理页面（用户管理页面会在组件内控制，但路由守卫也加上限制）
-    const allowedForNonRoot = ['/books', '/cart']
+    // 判断是否为root用户
+    const isRoot = username === 'root'
     
-    if (username !== 'root' && !allowedForNonRoot.includes(to.path)) {
-        // 非root用户访问其他页面，重定向到图书管理
+    // 后台管理端路由
+    const adminRoutes = ['/admin/orders', '/admin/books', '/admin/categories', '/admin/borrows', '/admin/users']
+    
+    // 非root用户不能访问后台管理端
+    if (!isRoot && adminRoutes.includes(to.path)) {
         next('/books')
+        return
+    }
+    
+    // root用户访问前台页面时，重定向到后台管理端
+    if (isRoot && (to.path === '/books' || to.path === '/cart' || to.path === '/my-borrows' || to.path === '/my-orders')) {
+        next('/admin/orders')
         return
     }
     

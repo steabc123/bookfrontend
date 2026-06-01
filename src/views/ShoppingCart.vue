@@ -3,11 +3,11 @@
     <header class="header">
       <h1>线上書阁 - 购物车</h1>
       <nav>
-        <router-link to="/books">图书管理</router-link>
-        <router-link v-if="isRoot" to="/categories">分类管理</router-link>
-        <router-link v-if="isRoot" to="/borrows">借阅管理</router-link>
-        <router-link v-if="isRoot" to="/users">用户管理</router-link>
+        <router-link to="/books">图书列表</router-link>
         <router-link to="/cart" class="active">购物车</router-link>
+        <router-link to="/my-borrows">我的借阅</router-link>
+        <router-link to="/my-orders">我的订单</router-link>
+        <router-link to="/profile">个人中心</router-link>
         <button @click="logout">退出登录</button>
       </nav>
     </header>
@@ -70,6 +70,7 @@
 
 <script>
 import { getCart, removeFromCart, clearCart, getCartTotal, updateCartQuantity } from '@/api/cart'
+import { createOrder } from '@/api/order'
 
 export default {
   name: 'ShoppingCart',
@@ -79,21 +80,7 @@ export default {
       totalAmount: 0
     }
   },
-  computed: {
-    isRoot() {
-      const userInfo = localStorage.getItem('userInfo')
-      if (userInfo) {
-        try {
-          const user = JSON.parse(userInfo)
-          return user.username === 'root'
-        } catch (e) {
-          console.error('解析用户信息失败:', e)
-          return false
-        }
-      }
-      return false
-    }
-  },
+
   created() {
     this.loadCart()
   },
@@ -140,9 +127,13 @@ export default {
     async handleCheckout() {
       if (!confirm(`确认结算吗？总金额：¥${this.totalAmount.toFixed(2)}`)) return
       try {
+        // 创建订单
+        await createOrder(this.cartItems)
+        // 清空购物车
         await clearCart()
-        alert('结算成功！')
-        this.loadCart()
+        alert('订单创建成功！')
+        // 跳转到我的订单页面
+        this.$router.push('/my-orders')
       } catch (error) {
         alert('结算失败：' + error.message)
       }

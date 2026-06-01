@@ -1,13 +1,13 @@
 <template>
   <div class="borrows-container">
     <header class="header">
-      <h1>线上書阁</h1>
+      <h1>线上書阁 - 后台管理</h1>
       <nav>
-        <router-link to="/books">图书管理</router-link>
-        <router-link v-if="isRoot" to="/categories">分类管理</router-link>
-        <router-link v-if="isRoot" to="/borrows">借阅管理</router-link>
-        <router-link v-if="isRoot" to="/users">用户管理</router-link>
-        <router-link to="/cart">购物车</router-link>
+        <router-link to="/admin/orders">订单管理</router-link>
+        <router-link to="/admin/books">图书管理</router-link>
+        <router-link to="/admin/categories">分类管理</router-link>
+        <router-link to="/admin/borrows" class="active">借阅管理</router-link>
+        <router-link to="/admin/users">用户管理</router-link>
         <button @click="logout">退出登录</button>
       </nav>
     </header>
@@ -68,21 +68,7 @@ export default {
       borrows: []
     }
   },
-  computed: {
-    isRoot() {
-      const userInfo = localStorage.getItem('userInfo')
-      if (userInfo) {
-        try {
-          const user = JSON.parse(userInfo)
-          return user.username === 'root'
-        } catch (e) {
-          console.error('解析用户信息失败:', e)
-          return false
-        }
-      }
-      return false
-    }
-  },
+
   created() {
     this.loadBorrows()
   },

@@ -55,7 +55,13 @@ export default {
         localStorage.setItem('token', res.data.userId)
         localStorage.setItem('userInfo', JSON.stringify(res.data))
         alert('登录成功！')
-        this.$router.push('/books')
+        
+        // 根据用户名是否为root跳转到不同页面
+        if (res.data.username === 'root') {
+          this.$router.push('/admin/orders')
+        } else {
+          this.$router.push('/books')
+        }
       } catch (error) {
         alert('登录失败：' + error.message)
       } finally {
