@@ -46,6 +46,7 @@
 
 <script>
 import { getCurrentBorrows, returnBook } from '@/api/borrow'
+import { getBookById } from '@/api/book'
 
 export default {
   name: 'MyOrders',
@@ -63,6 +64,19 @@ export default {
       try {
         const res = await getCurrentBorrows()
         this.orders = res.data || []
+        
+        // 为每条记录获取图书名称
+        for (let order of this.orders) {
+          if (order.bookId && !order.bookName) {
+            try {
+              const bookRes = await getBookById(order.bookId)
+              order.bookName = bookRes.data.bookName
+            } catch (error) {
+              console.error('获取图书信息失败:', error)
+              order.bookName = '未知图书'
+            }
+          }
+        }
       } catch (error) {
         console.error('加载订单失败:', error)
         alert('加载订单失败：' + error.message)
