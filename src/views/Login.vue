@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="login-box">
-      <h2>图书管理系统 - 登录</h2>
+      <h2>用户端 - 登录</h2>
       <form @submit.prevent="handleLogin">
         <div class="form-group">
           <label>用户名：</label>
@@ -27,6 +27,9 @@
       </form>
       <p class="register-link">
         还没有账号？<router-link to="/register">立即注册</router-link>
+      </p>
+      <p class="admin-link">
+        管理员入口：<router-link to="/admin-login">后台管理登录</router-link>
       </p>
     </div>
   </div>

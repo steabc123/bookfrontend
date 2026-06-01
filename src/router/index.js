@@ -12,6 +12,11 @@ const routes = [
         component: () => import('@/views/Login.vue')
     },
     {
+        path: '/admin-login',
+        name: 'AdminLogin',
+        component: () => import('@/views/AdminLogin.vue')
+    },
+    {
         path: '/register',
         name: 'Register',
         component: () => import('@/views/Register.vue')
@@ -87,7 +92,7 @@ router.beforeEach((to, from, next) => {
     const userInfoStr = localStorage.getItem('userInfo')
     
     // 公开页面（不需要登录）
-    const publicPages = ['/login', '/register']
+    const publicPages = ['/login', '/register', '/admin-login']
     
     // 如果访问的是公开页面，直接放行
     if (publicPages.includes(to.path)) {
