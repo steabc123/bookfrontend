@@ -51,6 +51,13 @@ export default {
   },
   methods: {
     async handleLogin() {
+      // 验证是否为非root用户
+      if (this.loginForm.username === 'root') {
+        alert('root用户请使用管理员登录入口！')
+        this.$router.push('/admin-login')
+        return
+      }
+      
       this.loading = true
       try {
         const res = await login(this.loginForm)
@@ -59,12 +66,8 @@ export default {
         localStorage.setItem('userInfo', JSON.stringify(res.data))
         alert('登录成功！')
         
-        // 根据用户名是否为root跳转到不同页面
-        if (res.data.username === 'root') {
-          this.$router.push('/admin/orders')
-        } else {
-          this.$router.push('/books')
-        }
+        // 跳转到图书页面
+        this.$router.push('/books')
       } catch (error) {
         alert('登录失败：' + error.message)
       } finally {

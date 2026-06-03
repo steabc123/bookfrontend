@@ -130,7 +130,7 @@ router.beforeEach((to, from, next) => {
     }
     
     // root用户访问前台页面时，重定向到后台管理端
-    if (isRoot && (to.path === '/books' || to.path === '/cart' || to.path === '/my-borrows' || to.path === '/my-orders')) {
+    if (isRoot && (to.path === '/books' || to.path === '/cart' || to.path === '/my-borrows' || to.path === '/my-orders' || to.path === '/profile')) {
         next('/admin/orders')
         return
     }
