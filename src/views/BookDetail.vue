@@ -17,36 +17,46 @@
       
       <div v-else-if="book" class="book-detail">
         <div class="book-info">
-          <h2>{{ book.bookName }}</h2>
-          <div class="detail-item">
-            <span class="label">作者：</span>
-            <span class="value">{{ book.author }}</span>
+          <div class="book-cover">
+            <img 
+              :src="getBookImage(book.id)" 
+              :alt="book.bookName" 
+              class="book-large-image"
+              @error="handleImageError"
+            />
           </div>
-          <div class="detail-item">
-            <span class="label">出版社：</span>
-            <span class="value">{{ book.publisher || '暂无' }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="label">ISBN：</span>
-            <span class="value">{{ book.isbn }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="label">价格：</span>
-            <span class="value price">¥{{ book.price ? book.price.toFixed(2) : '0.00' }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="label">库存：</span>
-            <span class="value" :class="{ 'low-stock': book.stock < 10 }">{{ book.stock }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="label">分类：</span>
-            <span class="value">{{ getCategoryName(book.categoryId) }}</span>
-          </div>
-          
-          <div class="actions">
-            <button @click="handleAddToCart" class="btn-cart">加入购物车</button>
-            <button @click="handleBorrow" class="btn-borrow">借阅</button>
-            <button @click="$router.back()" class="btn-back">返回</button>
+          <div class="book-text-info">
+            <h2>{{ book.bookName }}</h2>
+            <div class="detail-item">
+              <span class="label">作者：</span>
+              <span class="value">{{ book.author }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">出版社：</span>
+              <span class="value">{{ book.publisher || '暂无' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">ISBN：</span>
+              <span class="value">{{ book.isbn }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">价格：</span>
+              <span class="value price">¥{{ book.price ? book.price.toFixed(2) : '0.00' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">库存：</span>
+              <span class="value" :class="{ 'low-stock': book.stock < 10 }">{{ book.stock }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">分类：</span>
+              <span class="value">{{ getCategoryName(book.categoryId) }}</span>
+            </div>
+            
+            <div class="actions">
+              <button @click="handleAddToCart" class="btn-cart">加入购物车</button>
+              <button @click="handleBorrow" class="btn-borrow">借阅</button>
+              <button @click="$router.back()" class="btn-back">返回</button>
+            </div>
           </div>
         </div>
       </div>
@@ -102,6 +112,14 @@ export default {
     getCategoryName(categoryId) {
       const category = this.categories.find(c => c.categoryId === categoryId)
       return category ? category.categoryName : '未分类'
+    },
+    handleImageError(event) {
+      // 图片加载失败时显示默认占位图
+      event.target.src = require('@/assets/logo.png')
+    },
+    getBookImage(bookId) {
+      // 根据图书ID获取对应的图片路径
+      return require(`@/views/book_img/${bookId}.jpg`)
     },
     async handleAddToCart() {
       try {
@@ -224,6 +242,28 @@ export default {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
+.book-info {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.book-cover {
+  flex-shrink: 0;
+}
+
+.book-large-image {
+  width: 300px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.book-text-info {
+  flex: 1;
+}
+
 .book-info h2 {
   margin-top: 0;
   margin-bottom: 30px;
@@ -301,5 +341,28 @@ export default {
 
 .btn-back:hover {
   background: #bbb;
+}
+
+@media (max-width: 768px) {
+  .book-info {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .book-large-image {
+    width: 100%;
+    height: auto;
+    max-width: 300px;
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+  
+  .btn-cart,
+  .btn-borrow,
+  .btn-back {
+    width: 100%;
+  }
 }
 </style>

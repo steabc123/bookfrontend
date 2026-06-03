@@ -28,6 +28,7 @@
         <thead>
         <tr>
           <th>ID</th>
+          <th>封面</th>
           <th>书名</th>
           <th>作者</th>
           <th>出版社</th>
@@ -41,6 +42,14 @@
         <tbody>
         <tr v-for="book in books" :key="book.id">
           <td>{{ book.id }}</td>
+          <td>
+            <img 
+              :src="getBookImage(book.id)" 
+              :alt="book.bookName" 
+              class="book-thumbnail"
+              @error="handleImageError"
+            />
+          </td>
           <td>{{ book.bookName }}</td>
           <td>{{ book.author }}</td>
           <td>{{ book.publisher || '-' }}</td>
@@ -184,6 +193,14 @@ export default {
       }
     },
 
+    handleImageError(event) {
+      // 图片加载失败时显示默认占位图
+      event.target.src = require('@/assets/logo.png')
+    },
+    getBookImage(bookId) {
+      // 根据图书ID获取对应的图片路径
+      return require(`@/views/book_img/${bookId}.jpg`)
+    },
     logout() {
       localStorage.removeItem('token')
       localStorage.removeItem('userInfo')
@@ -323,5 +340,12 @@ export default {
   color: white;
 }
 
+.book-thumbnail {
+  width: 60px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
 </style>
