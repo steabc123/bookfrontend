@@ -21,7 +21,7 @@
         <thead>
         <tr>
           <th>记录ID</th>
-          <th>用户ID</th>
+          <th>用户名</th>
           <th>图书名称</th>
           <th>借阅时间</th>
           <th>归还时间</th>
@@ -32,7 +32,7 @@
         <tbody>
         <tr v-for="record in borrows" :key="record.recordId">
           <td>{{ record.recordId }}</td>
-          <td>{{ record.userId }}</td>
+          <td>{{ record.username || '未知用户' }}</td>
           <td>{{ record.bookName || '加载中...' }}</td>
           <td>{{ formatDate(record.borrowTime) }}</td>
           <td>{{ record.returnTime ? formatDate(record.returnTime) : '-' }}</td>
@@ -60,6 +60,7 @@
 <script>
 import { getAllBorrows, returnBook } from '@/api/borrow'
 import { getBookById } from '@/api/book'
+import { getUserById } from '@/api/user'
 
 export default {
   name: 'BorrowList',
@@ -78,15 +79,25 @@ export default {
         const res = await getAllBorrows()
         this.borrows = res.data
         console.log('借阅记录原始数据:', this.borrows)
-        // 为每条记录获取图书名称
+        // 为每条记录获取图书名称和用户名
         for (let record of this.borrows) {
           console.log('记录ID:', record.recordId, '状态值:', record.borrowStatus, '状态类型:', typeof record.borrowStatus)
+          // 获取图书名称
           if (record.bookId && !record.bookName) {
             try {
               const bookRes = await getBookById(record.bookId)
               record.bookName = bookRes.data.bookName
             } catch (error) {
               record.bookName = '未知图书'
+            }
+          }
+          // 获取用户名
+          if (record.userId && !record.username) {
+            try {
+              const userRes = await getUserById(record.userId)
+              record.username = userRes.data.username
+            } catch (error) {
+              record.username = '未知用户'
             }
           }
         }
@@ -152,8 +163,9 @@ export default {
   color: white;
   padding: 20px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 30px;
 }
 
 .header h1 {

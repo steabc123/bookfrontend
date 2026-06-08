@@ -166,8 +166,9 @@ export default {
   color: white;
   padding: 20px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 30px;
 }
 
 .header h1 {
