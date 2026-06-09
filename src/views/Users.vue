@@ -15,6 +15,7 @@
     <main class="main-content">
       <div class="toolbar">
         <button @click="loadUsers">刷新</button>
+        <button @click="openAddDialog" class="btn-add">添加用户</button>
       </div>
 
       <table class="data-table">
@@ -56,14 +57,18 @@
       </table>
     </main>
 
-    <!-- 编辑用户对话框 -->
-    <div v-if="showEditDialog" class="modal">
+    <!-- 添加/编辑用户对话框 -->
+    <div v-if="showEditDialog || showAddDialog" class="modal">
       <div class="modal-content">
-        <h3>编辑用户</h3>
+        <h3>{{ editMode ? '编辑用户' : '添加用户' }}</h3>
         <form @submit.prevent="handleSubmit">
           <div class="form-group">
             <label>用户名：</label>
-            <input v-model="formData.username" disabled />
+            <input v-model="formData.username" :disabled="editMode" required />
+          </div>
+          <div class="form-group" v-if="!editMode">
+            <label>密码：</label>
+            <input type="password" v-model="formData.password" :required="!editMode" />
           </div>
           <div class="form-group">
             <label>角色：</label>
@@ -90,7 +95,7 @@
 </template>
 
 <script>
-import { getUsers, updateUser, deleteUser } from '@/api/user'
+import { getUsers, updateUser, deleteUser, addUser } from '@/api/user'
 
 export default {
   name: 'UserList',
@@ -98,9 +103,12 @@ export default {
     return {
       users: [],
       showEditDialog: false,
+      showAddDialog: false,
+      editMode: false,
       formData: {
         id: null,
         username: '',
+        password: '',
         role: 'user',
         status: 1
       }
@@ -156,22 +164,59 @@ export default {
       }
     },
     handleEdit(user) {
+      this.editMode = true
       this.formData = {
         id: user.userId || user.id,
         username: user.username,
+        password: '',
         role: user.role || 'user',
         status: user.status !== undefined ? user.status : 1
       }
       this.showEditDialog = true
     },
+    openAddDialog() {
+      // 打开添加对话框时，确保 editMode 为 false
+      this.editMode = false
+      this.formData = {
+        id: null,
+        username: '',
+        password: '',
+        role: 'user',
+        status: 1
+      }
+      this.showAddDialog = true
+      console.log('打开添加对话框, editMode:', this.editMode)
+    },
     async handleSubmit() {
       try {
-        await updateUser(this.formData)
-        alert('更新成功')
+        if (this.editMode) {
+          // 编辑模式 - 不发送 password 和 id
+          const updateData = {
+            id: this.formData.id,
+            username: this.formData.username,
+            role: this.formData.role,
+            status: this.formData.status
+          }
+          console.log('编辑用户数据:', updateData)
+          await updateUser(updateData)
+          alert('更新成功')
+        } else {
+          // 添加模式 - 只发送必要字段
+          const addData = {
+            username: this.formData.username,
+            password: this.formData.password,
+            role: this.formData.role,
+            status: this.formData.status
+          }
+          console.log('添加用户数据:', addData)
+          await addUser(addData)
+          alert('添加成功')
+        }
         this.closeDialog()
         this.loadUsers()
       } catch (error) {
-        alert('更新失败：' + error.message)
+        console.error('操作失败:', error)
+        alert((this.editMode ? '更新' : '添加') + '失败：' + error.message)
       }
     },
     async handleDelete(id) {
@@ -191,9 +236,12 @@ export default {
     },
     closeDialog() {
       this.showEditDialog = false
+      this.showAddDialog = false
+      this.editMode = false
       this.formData = {
         id: null,
         username: '',
+        password: '',
         role: 'user',
         status: 1
       }
@@ -214,7 +262,7 @@ export default {
 }
 
 .header {
-  background: url(/src/views/background.jpg) center/cover no-repeat;
+  background: url('~@/assets/background.jpg') center/cover no-repeat;
   color: white;
   padding: 20px;
   display: flex;
@@ -275,6 +323,10 @@ export default {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.toolbar .btn-add {
+  background: #4caf50;
 }
 
 .data-table {

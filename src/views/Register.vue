@@ -69,7 +69,7 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: url(/src/views/background.jpg) center/cover no-repeat;
+  background: url('~@/assets/background.jpg') center/cover no-repeat;
 }
 
 .register-box {

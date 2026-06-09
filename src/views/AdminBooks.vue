@@ -247,7 +247,7 @@ export default {
     },
     getBookImage(bookId) {
       // 根据图书ID获取对应的图片路径
-      return require(`@/views/book_img/${bookId}.jpg`)
+      return `/book_img/${bookId}.jpg`
     },
     logout() {
       localStorage.removeItem('token')
@@ -265,7 +265,7 @@ export default {
 }
 
 .header {
-  background: url(/src/views/background.jpg) center/cover no-repeat;
+  background: url('~@/assets/background.jpg') center/cover no-repeat;
   color: white;
   padding: 20px;
   display: flex;

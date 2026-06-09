@@ -16,10 +16,18 @@ export function getMyBorrows() {
     })
 }
 
-// 获取当前借阅记录
+// 获取当前借阅记录（管理员使用，返回所有记录）
 export function getCurrentBorrows() {
     return request({
         url: '/borrows/current',
+        method: 'get'
+    })
+}
+
+// 根据用户ID获取借阅记录
+export function getBorrowsByUserId(userId) {
+    return request({
+        url: '/borrows/user/' + userId,
         method: 'get'
     })
 }

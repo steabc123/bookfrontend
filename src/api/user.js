@@ -45,7 +45,7 @@ export function getUserById(id) {
 // 更新用户
 export function updateUser(data) {
     return request({
-        url: '/users',
+        url: '/users?action=update',
         method: 'put',
         data
     })
@@ -56,5 +56,14 @@ export function deleteUser(id) {
     return request({
         url: '/users/' + id,
         method: 'delete'
+    })
+}
+
+// 添加用户
+export function addUser(data) {
+    return request({
+        url: '/users?action=addUser',
+        method: 'post',
+        data
     })
 }

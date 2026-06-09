@@ -163,7 +163,7 @@ export default {
 }
 
 .header {
-  background: url(/src/views/background.jpg) center/cover no-repeat;
+  background: url('~@/assets/background.jpg') center/cover no-repeat;
   color: white;
   padding: 20px;
   display: flex;
