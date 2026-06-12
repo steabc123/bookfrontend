@@ -62,6 +62,10 @@
           <h3>编辑资料</h3>
           <form @submit.prevent="handleSubmitEdit">
             <div class="form-group">
+              <label>用户ID：</label>
+              <input v-model="editForm.userId" />
+            </div>
+            <div class="form-group">
               <label>用户名：</label>
               <input v-model="editForm.username" disabled />
             </div>
@@ -121,6 +125,7 @@ export default {
       showEditDialog: false,
       showPasswordDialog: false,
       editForm: {
+        userId: '',
         username: '',
         email: '',
         phone: ''
@@ -140,6 +145,7 @@ export default {
       try {
         const res = await getCurrentUser()
         this.userInfo = res.data
+        this.editForm.userId = res.data.userId || res.data.id || ''
         this.editForm.username = res.data.username
       } catch (error) {
         console.error('加载用户信息失败:', error)

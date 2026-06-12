@@ -63,6 +63,10 @@
         <h3>{{ editMode ? '编辑用户' : '添加用户' }}</h3>
         <form @submit.prevent="handleSubmit">
           <div class="form-group">
+            <label>用户ID：</label>
+            <input v-model="formData.id" :disabled="editMode" />
+          </div>
+          <div class="form-group">
             <label>用户名：</label>
             <input v-model="formData.username" :disabled="editMode" required />
           </div>
@@ -172,6 +176,7 @@ export default {
         role: user.role || 'user',
         status: user.status !== undefined ? user.status : 1
       }
+      console.log('编辑用户, formData:', this.formData)
       this.showEditDialog = true
     },
     openAddDialog() {
