@@ -2,7 +2,7 @@
   <div class="admin-login-container">
     <div class="admin-login-box">
       <div class="admin-logo">
-        <h1>线上書阁</h1>
+        <h1>线上书阁</h1>
         <p>后台管理系统</p>
       </div>
       <form @submit.prevent="handleAdminLogin">

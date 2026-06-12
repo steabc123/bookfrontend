@@ -1,7 +1,7 @@
 <template>
   <div class="books-container">
     <header class="header">
-      <h1>线上書阁</h1>
+      <h1>线上书阁</h1>
       <nav>
         <router-link to="/books">图书列表</router-link>
         <router-link to="/cart">购物车</router-link>
@@ -89,11 +89,13 @@ export default {
       books: [],
       categories: [],
       searchKeyword: '',
-      userBorrows: [] // 当前用户的借阅记录
+      userBorrows: [], // 当前用户的借阅记录
+      currentUserId: null // 当前登录用户ID
     }
   },
   computed: {},
   created() {
+    this.loadCurrentUser()
     this.loadBooks()
     this.loadUserBorrows()
     this.loadCategories()
@@ -107,10 +109,22 @@ export default {
         alert('加载图书失败：' + error.message)
       }
     },
+    loadCurrentUser() {
+      const userInfoStr = localStorage.getItem('userInfo')
+      if (userInfoStr) {
+        try {
+          const userInfo = JSON.parse(userInfoStr)
+          this.currentUserId = userInfo.userId || userInfo.id
+        } catch (e) {
+          console.error('解析用户信息失败:', e)
+        }
+      }
+    },
     async loadUserBorrows() {
       try {
         const res = await getCurrentBorrows()
-        this.userBorrows = res.data || []
+        // 过滤出当前用户的借阅记录
+        this.userBorrows = (res.data || []).filter(b => b.userId === this.currentUserId)
       } catch (error) {
         console.error('加载借阅记录失败:', error)
         this.userBorrows = []
