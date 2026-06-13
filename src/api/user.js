@@ -67,3 +67,12 @@ export function addUser(data) {
         data
     })
 }
+
+// 修改密码
+export function changePassword(data) {
+    return request({
+        url: '/users?action=changePassword',
+        method: 'put',
+        data
+    })
+}

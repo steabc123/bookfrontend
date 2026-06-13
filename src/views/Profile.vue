@@ -63,7 +63,7 @@
           <form @submit.prevent="handleSubmitEdit">
             <div class="form-group">
               <label>用户ID：</label>
-              <input v-model="editForm.userId" />
+              <input v-model="editForm.id" disabled />
             </div>
             <div class="form-group">
               <label>用户名：</label>
@@ -92,15 +92,19 @@
           <form @submit.prevent="handleSubmitPassword">
             <div class="form-group">
               <label>旧密码：</label>
-              <input type="password" v-model="passwordForm.oldPassword" required />
+              <input type="password" v-model="passwordForm.oldPassword" required placeholder="请输入当前密码" />
             </div>
             <div class="form-group">
               <label>新密码：</label>
-              <input type="password" v-model="passwordForm.newPassword" required />
+              <input type="password" v-model="passwordForm.newPassword" required minlength="6" placeholder="至少6位字符" />
+              <small class="hint">密码长度至少6位</small>
             </div>
             <div class="form-group">
               <label>确认新密码：</label>
-              <input type="password" v-model="passwordForm.confirmPassword" required />
+              <input type="password" v-model="passwordForm.confirmPassword" required minlength="6" placeholder="再次输入新密码" />
+              <small v-if="passwordForm.confirmPassword && passwordForm.newPassword !== passwordForm.confirmPassword" class="error-hint">
+                两次输入的密码不一致
+              </small>
             </div>
             <div class="modal-actions">
               <button type="submit">保存</button>
@@ -114,7 +118,7 @@
 </template>
 
 <script>
-import { getCurrentUser, updateUser } from '@/api/user'
+import { getCurrentUser, updateUser, changePassword } from '@/api/user'
 
 export default {
   name: 'UserProfile',
@@ -125,7 +129,7 @@ export default {
       showEditDialog: false,
       showPasswordDialog: false,
       editForm: {
-        userId: '',
+        id: '',
         username: '',
         email: '',
         phone: ''
@@ -145,7 +149,7 @@ export default {
       try {
         const res = await getCurrentUser()
         this.userInfo = res.data
-        this.editForm.userId = res.data.userId || res.data.id || ''
+        this.editForm.id = res.data.userId || res.data.id || ''
         this.editForm.username = res.data.username
       } catch (error) {
         console.error('加载用户信息失败:', error)
@@ -175,14 +179,35 @@ export default {
       this.showPasswordDialog = true
     },
     async handleSubmitPassword() {
+      // 验证新密码长度
+      if (this.passwordForm.newPassword.length < 6) {
+        alert('新密码长度不能少于6位')
+        return
+      }
+      
+      // 验证两次输入的新密码是否一致
       if (this.passwordForm.newPassword !== this.passwordForm.confirmPassword) {
         alert('两次输入的新密码不一致')
         return
       }
+      
       try {
-        // TODO: 调用修改密码接口
+        // 调用后端修改密码接口
+        await changePassword({
+          oldPassword: this.passwordForm.oldPassword,
+          newPassword: this.passwordForm.newPassword,
+          confirmPassword: this.passwordForm.confirmPassword
+        })
+        
         alert('密码修改成功，请重新登录')
         this.showPasswordDialog = false
+        // 清空表单
+        this.passwordForm = {
+          oldPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        }
+        // 退出登录
         this.logout()
       } catch (error) {
         alert('修改失败：' + error.message)
@@ -423,6 +448,20 @@ export default {
   border: 1px solid #ddd;
   border-radius: 5px;
   box-sizing: border-box;
+}
+
+.form-group small.hint {
+  display: block;
+  margin-top: 5px;
+  color: #999;
+  font-size: 12px;
+}
+
+.form-group small.error-hint {
+  display: block;
+  margin-top: 5px;
+  color: #f44336;
+  font-size: 12px;
 }
 
 .modal-actions {

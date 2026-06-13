@@ -64,11 +64,11 @@
         <form @submit.prevent="handleSubmit">
           <div class="form-group">
             <label>用户ID：</label>
-            <input v-model="formData.id" :disabled="editMode" />
+            <input v-model="formData.id" />
           </div>
           <div class="form-group">
             <label>用户名：</label>
-            <input v-model="formData.username" :disabled="editMode" required />
+            <input v-model="formData.username" required />
           </div>
           <div class="form-group" v-if="!editMode">
             <label>密码：</label>
@@ -111,6 +111,7 @@ export default {
       editMode: false,
       formData: {
         id: null,
+        originalId: null,  // 原始ID，用于追踪
         username: '',
         password: '',
         role: 'user',
@@ -169,8 +170,10 @@ export default {
     },
     handleEdit(user) {
       this.editMode = true
+      const userId = user.userId || user.id
       this.formData = {
-        id: user.userId || user.id,
+        id: userId,
+        originalId: userId,  // 保存原始ID用于后端更新
         username: user.username,
         password: '',
         role: user.role || 'user',
@@ -195,9 +198,10 @@ export default {
     async handleSubmit() {
       try {
         if (this.editMode) {
-          // 编辑模式 - 不发送 password 和 id
+          // 编辑模式 - 发送所有字段包括 id、originalId 和 username
           const updateData = {
             id: this.formData.id,
+            originalId: this.formData.originalId,
             username: this.formData.username,
             role: this.formData.role,
             status: this.formData.status
@@ -245,6 +249,7 @@ export default {
       this.editMode = false
       this.formData = {
         id: null,
+        originalId: null,
         username: '',
         password: '',
         role: 'user',
