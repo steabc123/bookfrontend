@@ -36,8 +36,8 @@
               <td>{{ item.id }}</td>
               <td>{{ item.bookName }}</td>
               <td>{{ item.author || '-' }}</td>
-              <td>-</td>
-              <td>-</td>
+              <td>{{ item.publisher || '-' }}</td>
+              <td>{{ item.isbn || '-' }}</td>
               <td>¥{{ item.price ? item.price.toFixed(2) : '0.00' }}</td>
               <td>
                 <input 
