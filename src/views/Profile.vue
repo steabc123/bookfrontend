@@ -39,6 +39,14 @@
             </span>
           </div>
           <div class="info-item">
+            <label>邮箱：</label>
+            <span>{{ userInfo.email || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <label>手机号：</label>
+            <span>{{ userInfo.phone || '-' }}</span>
+          </div>
+          <div class="info-item">
             <label>状态：</label>
             <span :class="userInfo.status === 1 ? 'status-active' : 'status-inactive'">
               {{ userInfo.status === 1 ? '启用' : '禁用' }}
