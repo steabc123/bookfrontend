@@ -80,6 +80,7 @@ export function cancelOrder(orderId) {
 
 // 删除订单
 export function deleteOrder(orderId) {
+    console.log('删除订单 - orderId:', orderId, '类型:', typeof orderId)
     return request({
         url: '/orders/' + orderId,
         method: 'delete'
