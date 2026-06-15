@@ -88,6 +88,14 @@
               <option :value="0">禁用</option>
             </select>
           </div>
+          <div class="form-group">
+            <label>邮箱：</label>
+            <input type="email" v-model="formData.email" />
+          </div>
+          <div class="form-group">
+            <label>手机号：</label>
+            <input type="tel" v-model="formData.phone" />
+          </div>
           <div class="modal-actions">
             <button type="submit">保存</button>
             <button type="button" @click="closeDialog">取消</button>
@@ -115,7 +123,9 @@ export default {
         username: '',
         password: '',
         role: 'user',
-        status: 1
+        status: 1,
+        email: '',
+        phone: ''
       }
     }
   },
@@ -177,7 +187,9 @@ export default {
         username: user.username,
         password: '',
         role: user.role || 'user',
-        status: user.status !== undefined ? user.status : 1
+        status: user.status !== undefined ? user.status : 1,
+        email: user.email || '',
+        phone: user.phone || ''
       }
       console.log('编辑用户, formData:', this.formData)
       this.showEditDialog = true
@@ -190,7 +202,9 @@ export default {
         username: '',
         password: '',
         role: 'user',
-        status: 1
+        status: 1,
+        email: '',
+        phone: ''
       }
       this.showAddDialog = true
       console.log('打开添加对话框, editMode:', this.editMode)
@@ -204,7 +218,9 @@ export default {
             originalId: this.formData.originalId,
             username: this.formData.username,
             role: this.formData.role,
-            status: this.formData.status
+            status: this.formData.status,
+            email: this.formData.email,
+            phone: this.formData.phone
           }
           console.log('编辑用户数据:', updateData)
           await updateUser(updateData)
@@ -215,7 +231,9 @@ export default {
             username: this.formData.username,
             password: this.formData.password,
             role: this.formData.role,
-            status: this.formData.status
+            status: this.formData.status,
+            email: this.formData.email,
+            phone: this.formData.phone
           }
           console.log('添加用户数据:', addData)
           await addUser(addData)
@@ -253,7 +271,9 @@ export default {
         username: '',
         password: '',
         role: 'user',
-        status: 1
+        status: 1,
+        email: '',
+        phone: ''
       }
     },
     logout() {
