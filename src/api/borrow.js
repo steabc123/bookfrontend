@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-// 获取所有借阅记录
 export function getAllBorrows() {
     return request({
         url: '/borrows',
@@ -8,7 +7,6 @@ export function getAllBorrows() {
     })
 }
 
-// 获取我的借阅记录
 export function getMyBorrows() {
     return request({
         url: '/borrows/my',
@@ -16,7 +14,6 @@ export function getMyBorrows() {
     })
 }
 
-// 获取当前借阅记录（管理员使用，返回所有记录）
 export function getCurrentBorrows() {
     return request({
         url: '/borrows/current',
@@ -24,7 +21,6 @@ export function getCurrentBorrows() {
     })
 }
 
-// 根据用户ID获取借阅记录
 export function getBorrowsByUserId(userId) {
     return request({
         url: '/borrows/user/' + userId,
@@ -32,7 +28,6 @@ export function getBorrowsByUserId(userId) {
     })
 }
 
-// 借书
 export function borrowBook(bookId) {
     return request({
         url: '/borrows',
@@ -44,7 +39,6 @@ export function borrowBook(bookId) {
     })
 }
 
-// 还书
 export function returnBook(recordId) {
     return request({
         url: '/borrows',

@@ -65,22 +65,18 @@ export default {
   methods: {
     async loadOrders() {
       try {
-        // 获取当前用户信息
         const userRes = await getCurrentUser()
         this.currentUserId = userRes.data.userId || userRes.data.id
         this.currentUserRole = userRes.data.role
         
         console.log('当前用户ID:', this.currentUserId, '角色:', this.currentUserRole)
         
-        // 获取所有借阅记录
         const res = await getCurrentBorrows()
         const allBorrows = res.data || []
         
-        // root用户可以看到所有借阅记录
         if (this.currentUserRole === 'admin') {
           this.orders = allBorrows
         } else {
-          // 普通用户只能看到自己的借阅记录
           this.orders = allBorrows.filter(borrow => {
             const borrowUserId = borrow.userId || borrow.user_id
             return borrowUserId === this.currentUserId
@@ -89,7 +85,6 @@ export default {
         
         console.log('过滤后的借阅记录数据:', this.orders)
         
-        // 为每条记录获取图书名称
         for (let order of this.orders) {
           if (order.bookId && !order.bookName) {
             try {

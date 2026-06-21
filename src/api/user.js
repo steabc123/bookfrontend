@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-// 获取所有用户
 export function getUsers() {
     return request({
         url: '/users/all',
@@ -8,7 +7,6 @@ export function getUsers() {
     })
 }
 
-// 用户登录
 export function login(data) {
     return request({
         url: '/users?action=login',
@@ -17,7 +15,6 @@ export function login(data) {
     })
 }
 
-// 用户注册
 export function register(data) {
     return request({
         url: '/users?action=register',
@@ -26,7 +23,6 @@ export function register(data) {
     })
 }
 
-// 获取当前用户信息
 export function getCurrentUser() {
     return request({
         url: '/users',
@@ -34,7 +30,6 @@ export function getCurrentUser() {
     })
 }
 
-// 根据ID获取用户
 export function getUserById(id) {
     return request({
         url: '/users/' + id,
@@ -42,7 +37,6 @@ export function getUserById(id) {
     })
 }
 
-// 更新用户
 export function updateUser(data) {
     return request({
         url: '/users?action=update',
@@ -51,7 +45,6 @@ export function updateUser(data) {
     })
 }
 
-// 删除用户
 export function deleteUser(id) {
     return request({
         url: '/users/' + id,
@@ -59,7 +52,6 @@ export function deleteUser(id) {
     })
 }
 
-// 添加用户
 export function addUser(data) {
     return request({
         url: '/users?action=addUser',
@@ -68,7 +60,6 @@ export function addUser(data) {
     })
 }
 
-// 修改密码
 export function changePassword(data) {
     return request({
         url: '/users?action=changePassword',

@@ -24,7 +24,6 @@
       </div>
 
       <div v-else>
-        <!-- 订单状态筛选 -->
         <div class="filter-tabs">
           <button 
             :class="{ active: currentFilter === 'all' }" 
@@ -48,7 +47,6 @@
           >已收货</button>
         </div>
 
-        <!-- 按用户分组的订单数据 -->
         <div v-for="(userOrders, username) in groupedOrders" :key="username" class="user-order-section">
           <div class="user-header">
             <h3>用户：{{ username }}</h3>
@@ -118,7 +116,6 @@ export default {
     }
   },
   computed: {
-    // 按用户名分组订单数据
     groupedOrders() {
       const groups = {}
       this.filteredOrders.forEach(order => {
@@ -130,7 +127,6 @@ export default {
       })
       return groups
     },
-    // 根据筛选条件过滤订单
     filteredOrders() {
       if (this.currentFilter === 'all') {
         return this.allOrders
@@ -149,7 +145,6 @@ export default {
         this.allOrders = res.data || []
       } catch (error) {
         console.error('加载订单数据失败:', error)
-        // 后端接口未实现时，显示提示信息
         if (error.response && error.response.status === 404) {
           alert('订单管理功能需要后端支持，请联系后端开发人员实现订单相关接口')
           this.allOrders = []

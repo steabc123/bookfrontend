@@ -63,7 +63,6 @@
           <button @click="handleChangePassword" class="btn-password">修改密码</button>
         </div>
       </div>
-
       <!-- 编辑资料对话框 -->
       <div v-if="showEditDialog" class="modal">
         <div class="modal-content">
@@ -93,7 +92,6 @@
         </div>
       </div>
 
-      <!-- 修改密码对话框 -->
       <div v-if="showPasswordDialog" class="modal">
         <div class="modal-content">
           <h3>修改密码</h3>
@@ -161,7 +159,6 @@ export default {
         this.editForm.username = res.data.username
       } catch (error) {
         console.error('加载用户信息失败:', error)
-        // 从本地存储获取
         const userInfoStr = localStorage.getItem('userInfo')
         if (userInfoStr) {
           this.userInfo = JSON.parse(userInfoStr)
@@ -187,20 +184,17 @@ export default {
       this.showPasswordDialog = true
     },
     async handleSubmitPassword() {
-      // 验证新密码长度
       if (this.passwordForm.newPassword.length < 6) {
         alert('新密码长度不能少于6位')
         return
       }
       
-      // 验证两次输入的新密码是否一致
       if (this.passwordForm.newPassword !== this.passwordForm.confirmPassword) {
         alert('两次输入的新密码不一致')
         return
       }
       
       try {
-        // 调用后端修改密码接口
         await changePassword({
           oldPassword: this.passwordForm.oldPassword,
           newPassword: this.passwordForm.newPassword,
@@ -209,13 +203,11 @@ export default {
         
         alert('密码修改成功，请重新登录')
         this.showPasswordDialog = false
-        // 清空表单
         this.passwordForm = {
           oldPassword: '',
           newPassword: '',
           confirmPassword: ''
         }
-        // 退出登录
         this.logout()
       } catch (error) {
         alert('修改失败：' + error.message)

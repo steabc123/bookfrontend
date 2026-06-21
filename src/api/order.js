@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-// 获取当前用户的订单列表
 export function getMyOrders() {
     return request({
         url: '/orders/my',
@@ -8,7 +7,6 @@ export function getMyOrders() {
     })
 }
 
-// 获取所有订单（管理员）
 export function getAllOrders() {
     return request({
         url: '/orders/all',
@@ -16,7 +14,6 @@ export function getAllOrders() {
     })
 }
 
-// 创建订单（从购物车结算）
 export function createOrder(cartItems) {
     return request({
         url: '/orders',
@@ -28,7 +25,6 @@ export function createOrder(cartItems) {
     })
 }
 
-// 支付订单
 export function payOrder(orderId) {
     console.log('支付订单 - orderId:', orderId, '类型:', typeof orderId)
     return request({
@@ -41,7 +37,6 @@ export function payOrder(orderId) {
     })
 }
 
-// 发货（管理员）
 export function shipOrder(orderId) {
     return request({
         url: '/orders',
@@ -53,7 +48,6 @@ export function shipOrder(orderId) {
     })
 }
 
-// 确认收货
 export function confirmReceive(orderId) {
     return request({
         url: '/orders',
@@ -65,7 +59,6 @@ export function confirmReceive(orderId) {
     })
 }
 
-// 取消订单
 export function cancelOrder(orderId) {
     console.log('取消订单 - orderId:', orderId, '类型:', typeof orderId)
     return request({
@@ -78,7 +71,6 @@ export function cancelOrder(orderId) {
     })
 }
 
-// 删除订单
 export function deleteOrder(orderId) {
     console.log('删除订单 - orderId:', orderId, '类型:', typeof orderId)
     return request({

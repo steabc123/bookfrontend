@@ -56,7 +56,6 @@ export default {
   },
   methods: {
     async handleAdminLogin() {
-      // 验证是否为root用户
       if (this.loginForm.username !== 'root') {
         alert('只有root用户可以登录后台管理系统！')
         return
@@ -65,12 +64,8 @@ export default {
       this.loading = true
       try {
         const res = await login(this.loginForm)
-        
-        // 保存用户信息和token
         localStorage.setItem('token', res.data.userId)
         localStorage.setItem('userInfo', JSON.stringify(res.data))
-        
-        // 验证是否为root用户
         if (res.data.username === 'root') {
           alert('管理员登录成功！')
           this.$router.push('/admin/orders')

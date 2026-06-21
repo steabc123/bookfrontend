@@ -41,7 +41,6 @@
       </table>
     </main>
 
-    <!-- 添加/编辑分类对话框 -->
     <div v-if="showAddDialog" class="modal">
       <div class="modal-content">
         <h3>{{ editMode ? '编辑分类' : '添加分类' }}</h3>

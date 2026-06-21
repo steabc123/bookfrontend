@@ -57,7 +57,6 @@
       </table>
     </main>
 
-    <!-- 添加/编辑用户对话框 -->
     <div v-if="showEditDialog || showAddDialog" class="modal">
       <div class="modal-content">
         <h3>{{ editMode ? '编辑用户' : '添加用户' }}</h3>
@@ -119,7 +118,7 @@ export default {
       editMode: false,
       formData: {
         id: null,
-        originalId: null,  // 原始ID，用于追踪
+        originalId: null,
         username: '',
         password: '',
         role: 'user',
@@ -143,25 +142,19 @@ export default {
         console.log('res.code:', res.code)
         console.log('res.message:', res.message)
         
-        // 处理不同的响应格式
         let userList = []
         if (Array.isArray(res.data)) {
-          // 如果 res.data 是数组
           userList = res.data
         } else if (res.data && typeof res.data === 'object') {
-          // 如果 res.data 是对象，检查是否有 list 或 users 属性
           if (Array.isArray(res.data.list)) {
             userList = res.data.list
           } else if (Array.isArray(res.data.users)) {
             userList = res.data.users
           } else if (res.data.records) {
-            // MyBatis-Plus 分页格式
             userList = Array.isArray(res.data.records) ? res.data.records : []
           } else if (res.data.rows) {
-            // 另一种分页格式
             userList = Array.isArray(res.data.rows) ? res.data.rows : []
           } else {
-            // 如果 res.data 本身就是用户对象（单个）
             userList = [res.data]
           }
         }
@@ -183,7 +176,7 @@ export default {
       const userId = user.userId || user.id
       this.formData = {
         id: userId,
-        originalId: userId,  // 保存原始ID用于后端更新
+        originalId: userId,
         username: user.username,
         password: '',
         role: user.role || 'user',
@@ -195,7 +188,6 @@ export default {
       this.showEditDialog = true
     },
     openAddDialog() {
-      // 打开添加对话框时，确保 editMode 为 false
       this.editMode = false
       this.formData = {
         id: null,
@@ -212,7 +204,6 @@ export default {
     async handleSubmit() {
       try {
         if (this.editMode) {
-          // 编辑模式 - 发送所有字段包括 id、originalId 和 username
           const updateData = {
             id: this.formData.id,
             originalId: this.formData.originalId,
@@ -226,7 +217,6 @@ export default {
           await updateUser(updateData)
           alert('更新成功')
         } else {
-          // 添加模式 - 只发送必要字段
           const addData = {
             username: this.formData.username,
             password: this.formData.password,

@@ -21,7 +21,6 @@
       </div>
 
       <div v-else>
-        <!-- 订单状态筛选 -->
         <div class="filter-tabs">
           <button 
             :class="{ active: currentFilter === 'all' }" 
@@ -132,7 +131,6 @@ export default {
         }
       } catch (error) {
         console.error('加载订单失败:', error)
-        // 后端接口未实现时，显示提示信息
         if (error.response && error.response.status === 404) {
           alert('订单功能需要后端支持，请联系后端开发人员实现订单相关接口')
           this.orders = []

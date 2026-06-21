@@ -51,7 +51,6 @@ export default {
   },
   methods: {
     async handleLogin() {
-      // 验证是否为非root用户
       if (this.loginForm.username === 'root') {
         alert('root用户请使用管理员登录入口！')
         this.$router.push('/admin-login')
@@ -61,12 +60,9 @@ export default {
       this.loading = true
       try {
         const res = await login(this.loginForm)
-        // 保存用户信息和token
         localStorage.setItem('token', res.data.userId)
         localStorage.setItem('userInfo', JSON.stringify(res.data))
         alert('登录成功！')
-        
-        // 跳转到图书页面
         this.$router.push('/books')
       } catch (error) {
         alert('登录失败：' + error.message)

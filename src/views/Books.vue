@@ -89,8 +89,8 @@ export default {
       books: [],
       categories: [],
       searchKeyword: '',
-      userBorrows: [], // 当前用户的借阅记录
-      currentUserId: null // 当前登录用户ID
+      userBorrows: [],
+      currentUserId: null
     }
   },
   computed: {},
@@ -123,7 +123,6 @@ export default {
     async loadUserBorrows() {
       try {
         const res = await getCurrentBorrows()
-        // 过滤出当前用户的借阅记录
         this.userBorrows = (res.data || []).filter(b => b.userId === this.currentUserId)
       } catch (error) {
         console.error('加载借阅记录失败:', error)
@@ -177,7 +176,6 @@ export default {
     async handleReturnBook(bookId) {
       if (!confirm('确定要归还这本图书吗？')) return
       try {
-        // 找到该书对应的借阅记录
         const borrowRecord = this.userBorrows.find(b => b.bookId === bookId)
         console.log('归还操作 - 书籍ID:', bookId, '借阅记录:', borrowRecord)
         if (borrowRecord && borrowRecord.borrowStatus === 0) {
@@ -208,11 +206,9 @@ export default {
     },
 
     handleImageError(event) {
-      // 图片加载失败时显示默认占位图
       event.target.src = require('@/assets/logo.png')
     },
     getBookImage(bookId) {
-      // 根据图书ID获取对应的图片路径
       return `/book_img/${bookId}.jpg`
     },
     logout() {

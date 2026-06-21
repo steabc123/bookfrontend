@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-// 获取所有分类
 export function getCategories() {
     return request({
         url: '/categories',
@@ -8,7 +7,6 @@ export function getCategories() {
     })
 }
 
-// 根据ID获取分类
 export function getCategoryById(id) {
     return request({
         url: '/categories/' + id,
@@ -16,7 +14,6 @@ export function getCategoryById(id) {
     })
 }
 
-// 添加分类
 export function addCategory(data) {
     return request({
         url: '/categories',
@@ -25,7 +22,6 @@ export function addCategory(data) {
     })
 }
 
-// 更新分类
 export function updateCategory(data) {
     return request({
         url: '/categories',
@@ -34,7 +30,6 @@ export function updateCategory(data) {
     })
 }
 
-// 删除分类
 export function deleteCategory(id) {
     return request({
         url: '/categories/' + id,

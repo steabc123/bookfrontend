@@ -90,12 +90,10 @@ export default {
         const res = await getCart()
         this.cartItems = res.data || []
         
-        // 计算总金额
         const totalRes = await getCartTotal()
         if (totalRes && totalRes.data) {
           this.totalAmount = totalRes.data.totalAmount
         } else {
-          // 如果接口失败，手动计算
           this.totalAmount = this.cartItems.reduce((sum, item) => {
             return sum + ((item.price || 0) * (item.quantity || 1))
           }, 0)
@@ -127,12 +125,9 @@ export default {
     async handleCheckout() {
       if (!confirm(`确认结算吗？总金额：¥${this.totalAmount.toFixed(2)}`)) return
       try {
-        // 创建订单
         await createOrder(this.cartItems)
-        // 清空购物车
         await clearCart()
         alert('订单创建成功！')
-        // 跳转到我的订单页面
         this.$router.push('/my-orders')
       } catch (error) {
         alert('结算失败：' + error.message)

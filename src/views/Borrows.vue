@@ -79,10 +79,8 @@ export default {
         const res = await getAllBorrows()
         this.borrows = res.data
         console.log('借阅记录原始数据:', this.borrows)
-        // 为每条记录获取图书名称和用户名
         for (let record of this.borrows) {
           console.log('记录ID:', record.recordId, '状态值:', record.borrowStatus, '状态类型:', typeof record.borrowStatus)
-          // 获取图书名称
           if (record.bookId && !record.bookName) {
             try {
               const bookRes = await getBookById(record.bookId)
@@ -91,7 +89,6 @@ export default {
               record.bookName = '未知图书'
             }
           }
-          // 获取用户名
           if (record.userId && !record.username) {
             try {
               const userRes = await getUserById(record.userId)
@@ -121,17 +118,13 @@ export default {
     formatDate(dateString) {
       if (!dateString) return '-'
       
-      // 直接使用 toLocaleString 并指定时区为亚洲/上海（北京时间）
-      // 这样无论后端返回的是什么格式，都会正确显示为北京时间
       const date = new Date(dateString)
       
-      // 检查日期是否有效
       if (isNaN(date.getTime())) {
         console.warn('无效的日期格式:', dateString)
         return dateString
       }
       
-      // 使用北京时间时区格式化
       return date.toLocaleString('zh-CN', {
         timeZone: 'Asia/Shanghai',
         year: 'numeric',

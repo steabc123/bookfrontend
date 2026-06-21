@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-// 获取所有图书
 export function getBooks() {
     return request({
         url: '/books',
@@ -8,7 +7,6 @@ export function getBooks() {
     })
 }
 
-// 搜索图书
 export function searchBooks(keyword) {
     return request({
         url: '/books',
@@ -17,7 +15,6 @@ export function searchBooks(keyword) {
     })
 }
 
-// 根据ID获取图书
 export function getBookById(id) {
     return request({
         url: '/books/' + id,
@@ -25,7 +22,6 @@ export function getBookById(id) {
     })
 }
 
-// 添加图书
 export function addBook(data) {
     return request({
         url: '/books',
@@ -34,7 +30,6 @@ export function addBook(data) {
     })
 }
 
-// 更新图书
 export function updateBook(data) {
     return request({
         url: '/books',
@@ -43,7 +38,6 @@ export function updateBook(data) {
     })
 }
 
-// 删除图书
 export function deleteBook(id) {
     return request({
         url: '/books/' + id,

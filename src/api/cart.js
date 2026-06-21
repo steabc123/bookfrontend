@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-// 获取购物车列表
 export function getCart() {
     return request({
         url: '/cart/list',
@@ -8,7 +7,6 @@ export function getCart() {
     })
 }
 
-// 添加图书到购物车
 export function addToCart(bookData) {
     return request({
         url: '/cart',
@@ -20,7 +18,6 @@ export function addToCart(bookData) {
     })
 }
 
-// 从购物车移除图书
 export function removeFromCart(cartId) {
     return request({
         url: '/cart/' + cartId,
@@ -28,7 +25,6 @@ export function removeFromCart(cartId) {
     })
 }
 
-// 清空购物车
 export function clearCart() {
     return request({
         url: '/cart',
@@ -39,7 +35,6 @@ export function clearCart() {
     })
 }
 
-// 更新购物车商品数量
 export function updateCartQuantity(cartItemId, quantity) {
     return request({
         url: '/cart',
@@ -51,7 +46,6 @@ export function updateCartQuantity(cartItemId, quantity) {
     })
 }
 
-// 获取购物车总金额
 export function getCartTotal() {
     return request({
         url: '/cart/total',

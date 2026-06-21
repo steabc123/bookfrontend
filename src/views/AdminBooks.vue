@@ -67,7 +67,6 @@
       </table>
     </main>
 
-    <!-- 添加/编辑图书对话框 -->
     <div v-if="showAddDialog" class="modal">
       <div class="modal-content">
         <h3>{{ editMode ? '编辑图书' : '添加图书' }}</h3>
@@ -242,11 +241,9 @@ export default {
       }
     },
     handleImageError(event) {
-      // 图片加载失败时显示默认占位图
       event.target.src = require('@/assets/logo.png')
     },
     getBookImage(bookId) {
-      // 根据图书ID获取对应的图片路径
       return `/book_img/${bookId}.jpg`
     },
     logout() {

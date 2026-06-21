@@ -1,16 +1,14 @@
 import axios from 'axios'
 
-// 创建axios实例
 const request = axios.create({
     baseURL: 'http://localhost:8080/LibraryManagementSystem/api',
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json;charset=UTF-8'
     },
-    withCredentials: true  // 重要：允许携带cookie（session）
+    withCredentials: true
 })
 
-// 请求拦截器
 request.interceptors.request.use(
     config => {
         return config
@@ -21,12 +19,10 @@ request.interceptors.request.use(
     }
 )
 
-// 响应拦截器
 request.interceptors.response.use(
     response => {
         const res = response.data
         console.log('响应数据:', res)
-        // 如果后端返回的是成功响应（可能没有 code 字段）
         if (res.code !== undefined && res.code !== 200) {
             console.error('响应错误:', res.message)
             if (res.code === 401) {
