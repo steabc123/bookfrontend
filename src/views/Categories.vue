@@ -1,7 +1,7 @@
 <template>
   <div class="categories-container">
     <header class="header">
-      <h1>线上书阁 - 后台管理</h1>
+      <h1>线上书阁 - 分类管理</h1>
       <nav>
         <router-link to="/admin/orders">订单管理</router-link>
         <router-link to="/admin/books">图书管理</router-link>

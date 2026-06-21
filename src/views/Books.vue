@@ -1,7 +1,7 @@
 <template>
   <div class="books-container">
     <header class="header">
-      <h1>线上书阁</h1>
+      <h1>线上书阁 - 图书列表</h1>
       <nav>
         <router-link to="/books">图书列表</router-link>
         <router-link to="/cart">购物车</router-link>
