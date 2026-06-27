@@ -1,5 +1,5 @@
 <template>
-  <div class="orders-container">
+  <div class="borrows-container">
     <header class="header">
       <h1>线上书阁 - 我的借阅</h1>
       <nav>
@@ -15,28 +15,28 @@
     <main class="main-content">
       <div v-if="loading" class="loading">加载中...</div>
       
-      <div v-else-if="orders.length === 0" class="empty-orders">
-        <p>暂无订单记录</p>
+      <div v-else-if="borrows.length === 0" class="empty-borrows">
+        <p>暂无借阅记录</p>
         <router-link to="/books" class="back-btn">去浏览图书</router-link>
       </div>
 
-      <div v-else class="orders-list">
-        <div v-for="order in orders" :key="order.recordId" class="order-card">
-          <div class="order-header">
-            <span class="order-id">订单号：{{ order.recordId }}</span>
-            <span :class="order.borrowStatus === 0 ? 'status-borrowing' : 'status-returned'">
-              {{ order.borrowStatus === 0 ? '借阅中' : '已归还' }}
+      <div v-else class="borrows-list">
+        <div v-for="borrow in borrows" :key="borrow.recordId" class="borrow-card">
+          <div class="borrow-header">
+            <span class="borrow-id">借阅号：{{ borrow.recordId }}</span>
+            <span :class="borrow.borrowStatus === 0 ? 'status-borrowing' : 'status-returned'">
+              {{ borrow.borrowStatus === 0 ? '借阅中' : '已归还' }}
             </span>
           </div>
-          <div class="order-body">
-            <div class="book-name">{{ order.bookName || '未知图书' }}</div>
-            <div class="order-info">
-              <span>借阅时间：{{ formatDate(order.borrowTime) }}</span>
-              <span v-if="order.returnTime">归还时间：{{ formatDate(order.returnTime) }}</span>
+          <div class="borrow-body">
+            <div class="book-name">{{ borrow.bookName || '未知图书' }}</div>
+            <div class="borrow-info">
+              <span>借阅时间：{{ formatDate(borrow.borrowTime) }}</span>
+              <span v-if="borrow.returnTime">归还时间：{{ formatDate(borrow.returnTime) }}</span>
             </div>
           </div>
-          <div class="order-actions" v-if="order.borrowStatus === 0">
-            <button @click="handleReturn(order.recordId)" class="btn-return">归还图书</button>
+          <div class="borrow-actions" v-if="borrow.borrowStatus === 0">
+            <button @click="handleReturn(borrow.recordId)" class="btn-return">归还图书</button>
           </div>
         </div>
       </div>
@@ -49,38 +49,38 @@ import { getMyBorrows, returnBook } from '@/api/borrow'
 import { getBookById } from '@/api/book'
 
 export default {
-  name: 'MyOrders',
+  name: 'MyBorrows',
   data() {
     return {
-      orders: [],
+      borrows: [],
       loading: true
     }
   },
   created() {
-    this.loadOrders()
+    this.loadBorrows()
   },
   methods: {
-    async loadOrders() {
+    async loadBorrows() {
       try {
         const res = await getMyBorrows()
-        this.orders = res.data || []
+        this.borrows = res.data || []
         
-        console.log('我的借阅记录:', this.orders)
+        console.log('我的借阅记录:', this.borrows)
         
-        for (let order of this.orders) {
-          if (order.bookId && !order.bookName) {
+        for (let borrow of this.borrows) {
+          if (borrow.bookId && !borrow.bookName) {
             try {
-              const bookRes = await getBookById(order.bookId)
-              order.bookName = bookRes.data.bookName
+              const bookRes = await getBookById(borrow.bookId)
+              borrow.bookName = bookRes.data.bookName
             } catch (error) {
               console.error('获取图书信息失败:', error)
-              order.bookName = '未知图书'
+              borrow.bookName = '未知图书'
             }
           }
         }
       } catch (error) {
-        console.error('加载订单失败:', error)
-        alert('加载订单失败：' + error.message)
+        console.error('加载借阅记录失败:', error)
+        alert('加载借阅记录失败：' + error.message)
       } finally {
         this.loading = false
       }
@@ -90,7 +90,7 @@ export default {
       try {
         await returnBook(recordId)
         alert('归还成功')
-        this.loadOrders()
+        this.loadBorrows()
       } catch (error) {
         alert('归还失败：' + error.message)
       }
@@ -119,7 +119,7 @@ export default {
 </script>
 
 <style scoped>
-.orders-container {
+.borrows-container {
   min-height: 100vh;
   background: #f5f5f5;
 }
@@ -175,7 +175,7 @@ export default {
 }
 
 .loading,
-.empty-orders {
+.empty-borrows {
   text-align: center;
   padding: 60px 20px;
   background: white;
@@ -183,7 +183,7 @@ export default {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.empty-orders p {
+.empty-borrows p {
   font-size: 18px;
   color: #999;
   margin-bottom: 20px;
@@ -203,19 +203,19 @@ export default {
   background: #5568d3;
 }
 
-.orders-list {
+.borrows-list {
   display: grid;
   gap: 20px;
 }
 
-.order-card {
+.borrow-card {
   background: white;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   overflow: hidden;
 }
 
-.order-header {
+.borrow-header {
   padding: 15px 20px;
   background: #f8f9fa;
   display: flex;
@@ -224,7 +224,7 @@ export default {
   border-bottom: 1px solid #eee;
 }
 
-.order-id {
+.borrow-id {
   font-weight: bold;
   color: #333;
 }
@@ -239,7 +239,7 @@ export default {
   font-weight: bold;
 }
 
-.order-body {
+.borrow-body {
   padding: 20px;
 }
 
@@ -250,7 +250,7 @@ export default {
   font-weight: bold;
 }
 
-.order-info {
+.borrow-info {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -258,7 +258,7 @@ export default {
   font-size: 14px;
 }
 
-.order-actions {
+.borrow-actions {
   padding: 15px 20px;
   border-top: 1px solid #eee;
   text-align: right;

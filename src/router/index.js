@@ -39,7 +39,7 @@ const routes = [
     {
         path: '/my-borrows',
         name: 'MyBorrows',
-        component: () => import('@/views/MyOrders.vue')
+        component: () => import('@/views/MyBorrows.vue')
     },
     {
         path: '/my-orders',
