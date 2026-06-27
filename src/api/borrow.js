@@ -20,14 +20,6 @@ export function getCurrentBorrows() {
         method: 'get'
     })
 }
-
-export function getBorrowsByUserId(userId) {
-    return request({
-        url: '/borrows/user/' + userId,
-        method: 'get'
-    })
-}
-
 export function borrowBook(bookId) {
     return request({
         url: '/borrows',

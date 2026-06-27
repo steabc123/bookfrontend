@@ -6,14 +6,6 @@ export function getCategories() {
         method: 'get'
     })
 }
-
-export function getCategoryById(id) {
-    return request({
-        url: '/categories/' + id,
-        method: 'get'
-    })
-}
-
 export function addCategory(data) {
     return request({
         url: '/categories',

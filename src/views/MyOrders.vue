@@ -45,18 +45,15 @@
 </template>
 
 <script>
-import { getCurrentBorrows, returnBook } from '@/api/borrow'
+import { getMyBorrows, returnBook } from '@/api/borrow'
 import { getBookById } from '@/api/book'
-import { getCurrentUser } from '@/api/user'
 
 export default {
   name: 'MyOrders',
   data() {
     return {
       orders: [],
-      loading: true,
-      currentUserId: null,
-      currentUserRole: null
+      loading: true
     }
   },
   created() {
@@ -65,25 +62,10 @@ export default {
   methods: {
     async loadOrders() {
       try {
-        const userRes = await getCurrentUser()
-        this.currentUserId = userRes.data.userId || userRes.data.id
-        this.currentUserRole = userRes.data.role
+        const res = await getMyBorrows()
+        this.orders = res.data || []
         
-        console.log('当前用户ID:', this.currentUserId, '角色:', this.currentUserRole)
-        
-        const res = await getCurrentBorrows()
-        const allBorrows = res.data || []
-        
-        if (this.currentUserRole === 'admin') {
-          this.orders = allBorrows
-        } else {
-          this.orders = allBorrows.filter(borrow => {
-            const borrowUserId = borrow.userId || borrow.user_id
-            return borrowUserId === this.currentUserId
-          })
-        }
-        
-        console.log('过滤后的借阅记录数据:', this.orders)
+        console.log('我的借阅记录:', this.orders)
         
         for (let order of this.orders) {
           if (order.bookId && !order.bookName) {
