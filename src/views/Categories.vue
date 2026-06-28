@@ -31,7 +31,7 @@
         <tr v-for="category in categories" :key="category.categoryId">
           <td>{{ category.categoryId }}</td>
           <td>{{ category.categoryName }}</td>
-          <td>{{ category.description || category.categoryDesc || '-' }}</td>
+          <td>{{ category.categoryDesc || '-' }}</td>
           <td>
             <button @click="handleEdit(category)" class="btn-edit">编辑</button>
             <button @click="handleDelete(category.categoryId)" class="btn-delete">删除</button>
@@ -55,7 +55,7 @@
           </div>
           <div class="form-group">
             <label>描述：</label>
-            <textarea v-model="formData.description"></textarea>
+            <textarea v-model="formData.categoryDesc"></textarea>
           </div>
           <div class="modal-actions">
             <button type="submit">保存</button>
@@ -80,7 +80,7 @@ export default {
       formData: {
         categoryId: null,
         categoryName: '',
-        description: ''
+        categoryDesc: ''
       }
     }
   },
@@ -143,7 +143,7 @@ export default {
       this.formData = {
         categoryId: null,
         categoryName: '',
-        description: ''
+        categoryDesc: ''
       }
     },
     logout() {
